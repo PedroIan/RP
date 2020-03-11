@@ -1,5 +1,3 @@
-import os, sys
-
 import numpy as np
 #import seaborn as sns
 from scipy.stats import norm
@@ -9,9 +7,9 @@ from matplotlib import pyplot as plt
 from sklearn.neighbors import KernelDensity
 
 origin = 0
-var = 0.6 # Variancia da Distribuição Normal
+var = 0.6 # Variancia da Distribuicao Normal
 
-# Vetores das posições das amostras 1 e 2
+# Vetores das posicoes das amostras 1 e 2
 x1 = []
 y1 = []
 X1 = []
