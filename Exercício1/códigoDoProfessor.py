@@ -2,19 +2,22 @@ import numpy as np
 from scipy.stats import norm
 from matplotlib import pyplot as plt
 
-loc = 0
-var = 1
-amostra = range(50)
-domain = np.linspace(-2, -2, 1000)
-# plt.plot(domain, norm.pdf(domain, 0, 0.6))
-# plt.show()
+origin = 0
+var = 0.6 # Variância da Distribuição Normal
 
-x = []
-y = []
-for i in domain:
-    x += [np.random.normal(loc, var)]
-    y += [np.random.normal(loc, var)]
+# Vetores das posições das amostras 1 e 2
+x1 = []
+y1 = []
 
-plt.plot(x, y, 'b.') #  '( r | g | b )'  +  '( o | -- | ^ | . )'
-plt.axis([-4, 4, -4, 4])
+x2 = []
+y2 = []
+
+for i in range(100):
+    x1 += [np.random.normal(origin, var) + 2]
+    y1 += [np.random.normal(origin, var) + 2]
+    x2 += [np.random.normal(origin, var) + 4]
+    y2 += [np.random.normal(origin, var) + 4]
+
+plt.plot(x1, y1, 'r.', x2, y2, 'b+') #  '( r | g | b )'  +  '( o | -- | ^ | . )'
+plt.axis([0, 6, 0, 6])
 plt.show()
