@@ -30,8 +30,11 @@ plt.plot(x1, y1, 'r.', x2, y2, 'b+') #  '( r | g | b )'  +  '( o | -- | ^ | . )'
 plt.axis([0, 6, 0, 6])
 plt.show()
 
+base = np.linspace(0,6,100)
+
 kde = KernelDensity(bandwidth=0.2).fit(X1, 2)
-plt.plot(kde.score_samples(X1))
+print(len(kde.sample()[0]))
+plt.plot(np.transpose(base), kde.sample())
 plt.show()
 
 #sns.distplot(x1)
