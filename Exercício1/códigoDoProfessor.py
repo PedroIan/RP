@@ -15,6 +15,6 @@ for i in domain:
     x += [np.random.normal(loc, var)]
     y += [np.random.normal(loc, var)]
 
-plt.plot(x, y, 'b') #  '( r | g | b )'  +  '( o | -- | ^ | . )'
+plt.plot(x, y, 'b.') #  '( r | g | b )'  +  '( o | -- | ^ | . )'
 plt.axis([-4, 4, -4, 4])
 plt.show()
