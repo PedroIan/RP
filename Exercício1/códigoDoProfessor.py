@@ -26,13 +26,14 @@ for i in range(100):
     y2 += [np.random.normal(origin, var) + 4]
     X2 += [x2, y2]
 
-something = sns.kdeplot(x1)
-something2 = sns.kdeplot(y1)
-print(something)
+something = sns.kdeplot(x1, y1)
+something2 = sns.kdeplot(x2, y2)
 plt.show()
 
-sns.jointplot(x="something", y="something2", kind="kde")
-plt.show
+# out = sns.distplot(x1, hist=True, rug=True)
+# print(out)
+# # sns.jointplot(x="something", y="something2", kind="kde")
+# plt.show()
 
 # nbins = 100
 # k = kde.gaussian_kde([x1, y1])
