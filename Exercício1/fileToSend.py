@@ -33,11 +33,9 @@ var2 = 0.6
 # Vetores das posicoes das amostras 1 e 2
 x1 = []
 y1 = []
-X1 = []
 
 x2 = []
 y2 = []
-X2 = []
 
 for i in range(100):
     x1 += [np.random.normal(origin, var) + 2]
