@@ -3,6 +3,7 @@ import seaborn as sns
 from scipy.stats import norm
 from scipy.stats import kde
 from matplotlib import pyplot as plt
+from scipy.interpolate import interp1d
 
 
 def pdfUnivariada(sigma, media, inputX):
@@ -45,7 +46,91 @@ for i in range(numClusters):
     X += [tempX]
     Y += [tempY]
 
-print(X)
+xAxesBases = []
+yAxesBases = []
+
+for i in X:
+    xAxesBases += [np.linspace(min(i), max(i), 100)]
+for i in Y:
+    yAxesBases += [np.linspace(min(i), max(i), 100)]
+
+mediasX = []
+for i in X:
+    mediasX += [media(i)]
+
+desviosX = []
+for i in X:
+    desviosX += [desvioPadrao(i)]
+
+mediasY = []
+for i in Y:
+    mediasY += [media(i)]
+
+desviosY = []
+for i in Y:
+    desviosY += [desvioPadrao(i)]
+
+
+distribuicoesX = []
+for i in range(len(X)):
+    temp = []
+    for j in X[i]:
+        temp += [pdfUnivariada(desviosX[i], mediasX[i], j)]
+    distribuicoesX += [temp]
+
+distribuicoesY = []
+for i in range(len(Y)):
+    temp = []
+    for j in Y[i]:
+        temp += [pdfUnivariada(desviosY[i], mediasY[i], j)]
+    distribuicoesY += [temp]
+
+interpolacoesX = []
+interpolacoesY = []
+for i in range(numClusters):
+    interpolacoesX += [interp1d(X[i], distribuicoesX[i], kind=5, fill_value='extrapolate')]
+    interpolacoesY += [interp1d(Y[i], distribuicoesY[i], kind=5, fill_value='extrapolate')]
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+
+xMesh = []
+yMesh = []
+
+for i in range(len(xAxesBases)):
+    tempX, tempY = np.meshgrid(xAxesBases[i], yAxesBases[i])
+    xMesh += [tempX]
+    yMesh += [tempY]
+
+print(xMesh[0])
+print(interpolacoesY[0](yMesh[0]))
+
+Z = []
+for i in range(numClusters):
+    Z += [interpolacoesX[i](xMesh[i]) + interpolacoesY[i](yMesh[i])]
+    ax.plot_surface(xMesh[i], yMesh[i], Z[i])
+
+plt.show()
+
+
+
+
+
+# p = interp1d(x1, distribuicaoX1, kind=5, fill_value='extrapolate')
+
+# for i in X:
+#     p += [interp1d(i)]
+# pY = interp1d(y1, distribuicaoY1, kind=5, fill_value='extrapolate')
+
+
+# Z = p(xMesh) + pY(yMesh)
+# ax.plot_surface(xMesh, yMesh, np.asarray(Z))
+# plt.show()
+# plt.plot(xAxesBase, p(xAxesBase))
+# plt.show()
+
+
+print(desviosX)
 
 # plt.scatter(X[0], Y[0])
 # plt.scatter(X[1], Y[1])
