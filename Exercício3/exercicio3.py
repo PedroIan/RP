@@ -49,7 +49,7 @@ for i in range(numClusters):
 xAxesBases = []
 yAxesBases = []
 
-teste = np.linspace(0, 6, 100)
+spaceLimit = np.linspace(0, 6, 100)
 
 for i in X:
     xAxesBases += [np.linspace(min(i), max(i), 100)]
@@ -76,22 +76,37 @@ for i in Y:
 distribuicoesX = []
 for i in range(len(X)):
     temp = []
-    for j in teste:
+    for j in spaceLimit:
         temp += [pdfUnivariada(desviosX[i], mediasX[i], j)]
     distribuicoesX += [temp]
 
 distribuicoesY = []
 for i in range(len(Y)):
     temp = []
-    for j in teste:
+    for j in spaceLimit:
         temp += [pdfUnivariada(desviosY[i], mediasY[i], j)]
     distribuicoesY += [temp]
 
 interpolacoesX = []
 interpolacoesY = []
 for i in range(numClusters):
-    interpolacoesX += [interp1d(teste, distribuicoesX[i], kind=5, fill_value='extrapolate')]
-    interpolacoesY += [interp1d(teste, distribuicoesY[i], kind=5, fill_value='extrapolate')]
+    interpolacoesX += [interp1d(spaceLimit, distribuicoesX[i], kind=5, fill_value='extrapolate')]
+    interpolacoesY += [interp1d(spaceLimit, distribuicoesY[i], kind=5, fill_value='extrapolate')]
+
+plt.scatter(X[0], Y[0])
+plt.scatter(X[1], Y[1])
+plt.scatter(X[2], Y[2])
+plt.scatter(X[3], Y[3])
+
+plt.show()
+
+for i in range(numClusters):
+    plt.plot(spaceLimit, interpolacoesX[i](spaceLimit))
+plt.show()
+
+for i in range(numClusters):
+    plt.plot(spaceLimit, interpolacoesY[i](spaceLimit))
+plt.show()
 
 fig = plt.figure()
 ax = fig.gca(projection='3d')
@@ -100,7 +115,7 @@ xMesh = []
 yMesh = []
 
 for i in range(len(xAxesBases)):
-    tempX, tempY = np.meshgrid(teste, teste)
+    tempX, tempY = np.meshgrid(spaceLimit, spaceLimit)
     xMesh += [tempX]
     yMesh += [tempY]
 
@@ -119,11 +134,5 @@ ax.plot_surface(xMesh[0], yMesh[0], z, cmap=plt.cm.Greens_r)
 plt.show()
 
 
-# plt.scatter(X[0], Y[0])
-# plt.scatter(X[1], Y[1])
-# plt.scatter(X[2], Y[2])
-# plt.scatter(X[3], Y[3])
-
-# plt.show()
 
 
