@@ -49,6 +49,8 @@ for i in range(numClusters):
 xAxesBases = []
 yAxesBases = []
 
+teste = np.linspace(0, 6, 100)
+
 for i in X:
     xAxesBases += [np.linspace(min(i), max(i), 100)]
 for i in Y:
@@ -74,22 +76,22 @@ for i in Y:
 distribuicoesX = []
 for i in range(len(X)):
     temp = []
-    for j in X[i]:
+    for j in teste:
         temp += [pdfUnivariada(desviosX[i], mediasX[i], j)]
     distribuicoesX += [temp]
 
 distribuicoesY = []
 for i in range(len(Y)):
     temp = []
-    for j in Y[i]:
+    for j in teste:
         temp += [pdfUnivariada(desviosY[i], mediasY[i], j)]
     distribuicoesY += [temp]
 
 interpolacoesX = []
 interpolacoesY = []
 for i in range(numClusters):
-    interpolacoesX += [interp1d(X[i], distribuicoesX[i], kind=5, fill_value='extrapolate')]
-    interpolacoesY += [interp1d(Y[i], distribuicoesY[i], kind=5, fill_value='extrapolate')]
+    interpolacoesX += [interp1d(teste, distribuicoesX[i], kind=5, fill_value='extrapolate')]
+    interpolacoesY += [interp1d(teste, distribuicoesY[i], kind=5, fill_value='extrapolate')]
 
 fig = plt.figure()
 ax = fig.gca(projection='3d')
@@ -98,39 +100,24 @@ xMesh = []
 yMesh = []
 
 for i in range(len(xAxesBases)):
-    tempX, tempY = np.meshgrid(xAxesBases[i], yAxesBases[i])
+    tempX, tempY = np.meshgrid(teste, teste)
     xMesh += [tempX]
     yMesh += [tempY]
 
 print(xMesh[0])
 print(interpolacoesY[0](yMesh[0]))
 
-Z = []
-for i in range(numClusters):
-    Z += [interpolacoesX[i](xMesh[i]) + interpolacoesY[i](yMesh[i])]
-    ax.plot_surface(xMesh[i], yMesh[i], Z[i])
+# Z = []
+# for i in range(numClusters):
+#     Z += [interpolacoesX[i](xMesh[i]) * interpolacoesY[i](yMesh[i])]
+#     ax.plot_surface(xMesh[i], yMesh[i], Z[i])
 
+# plt.show()
+
+z = interpolacoesX[0](xMesh[0]) * interpolacoesY[0](yMesh[0]) + interpolacoesX[1](xMesh[1]) * interpolacoesY[1](yMesh[1]) + interpolacoesX[2](xMesh[2]) * interpolacoesY[2](yMesh[2]) + interpolacoesX[3](xMesh[3]) * interpolacoesY[3](yMesh[3])
+ax.plot_surface(xMesh[0], yMesh[0], z, cmap=plt.cm.Greens_r)
 plt.show()
 
-
-
-
-
-# p = interp1d(x1, distribuicaoX1, kind=5, fill_value='extrapolate')
-
-# for i in X:
-#     p += [interp1d(i)]
-# pY = interp1d(y1, distribuicaoY1, kind=5, fill_value='extrapolate')
-
-
-# Z = p(xMesh) + pY(yMesh)
-# ax.plot_surface(xMesh, yMesh, np.asarray(Z))
-# plt.show()
-# plt.plot(xAxesBase, p(xAxesBase))
-# plt.show()
-
-
-print(desviosX)
 
 # plt.scatter(X[0], Y[0])
 # plt.scatter(X[1], Y[1])
