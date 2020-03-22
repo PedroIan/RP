@@ -1,5 +1,4 @@
 import numpy as np
-import seaborn as sns
 from scipy.stats import norm
 from scipy.stats import kde
 from matplotlib import pyplot as plt
