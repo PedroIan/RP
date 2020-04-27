@@ -97,15 +97,15 @@ plt.scatter(X[1], Y[1])
 plt.scatter(X[2], Y[2])
 plt.scatter(X[3], Y[3])
 
-plt.show()
+# plt.show()
 
 for i in range(numClusters):
     plt.plot(spaceLimit, interpolacoesX[i](spaceLimit))
-plt.show()
+# plt.show()
 
 for i in range(numClusters):
     plt.plot(spaceLimit, interpolacoesY[i](spaceLimit))
-plt.show()
+# plt.show()
 
 fig = plt.figure()
 ax = fig.gca(projection='3d')
