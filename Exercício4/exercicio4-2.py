@@ -8,9 +8,10 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from matplotlib.colors import ListedColormap
 
-origins = [[2, 2], [4, 4]]
+origins = [[-1, -1], [-1, 1], [1, 1], [1, -1]]
 numClusters = len(origins)
-varAmostra = [0.8, 0.4]
+varAmostra = [0.4, 0.4, 0.4, 0.4]
+cluster = [0,1,0,1]
 ax = plt.subplot()
 
 # Vetores das posicoes das amostras 1 e 2
@@ -30,19 +31,11 @@ for i in range(numClusters):
         allX1 += [np.random.normal(origins[i][0], varAmostra[i])]
         X2 += [np.random.normal(origins[i][1], varAmostra[i])]
         allX2 += [np.random.normal(origins[i][1], varAmostra[i])]
-        Y += [i]
-
-    X1_train, X1_test, X2_train, X2_test = train_test_split(
-        X1, X2, test_size=0.1, random_state=1)  
-
-    plt.scatter(X1_train, X2_train, c='#1f77b4')
-    plt.scatter(X1_test, X2_test, c='#ff7f0e')
-
-    plt.show()
+        Y += [cluster[i]]
 
 h = .02
-x_min, x_max = -0.5, 6
-y_min, y_max = -0.5, 6
+x_min, x_max = -3, 3
+y_min, y_max = -3, 3
 xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
                         np.arange(y_min, y_max, h))
 
