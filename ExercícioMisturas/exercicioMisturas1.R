@@ -1,4 +1,5 @@
 library('mlbench')
+
 source('kMeans.R')
 library('plot3D')
 library('rgl')
@@ -6,6 +7,7 @@ library('rgl')
 library(MASS)
 
 p<-mlbench.spirals(1000,cycles=1, sd=0.05)
+
 x <- p[[1]]
 classes <- as.numeric(p[[2]])
 
@@ -21,8 +23,10 @@ plot(x[,1],x[,2], col = cores[classes], xlim = c(-1.5,1.5), ylim = c(-1.5,1.5), 
 nfolds <- 10
 
 teste1 <- allWithClasses[sample(nrow(allWithClasses), 3, replace=TRUE),]
+allMeanAcuracias <- array(0,1)
 
 while(TRUE) {
+  acuracia <- array(0,1)
   
   
   clustersErrados <- matrix(FALSE, nrow = nClusters)
@@ -39,6 +43,7 @@ while(TRUE) {
     diferentes <- unique(pontosSelecionados[,3])
     
     if(length(diferentes) <= 1) {
+      acuracia <- c(acuracia, 1)
       clustersErrados[i] <- TRUE
     } else {
       quantidade <- length(pontosSelecionados[pontosSelecionados[,3] == 1,1])
@@ -46,7 +51,12 @@ while(TRUE) {
       razao <- quantidade/tamanhoTotal
       
       if(is.numeric(razao) & !is.na(razao)){
-        if(razao > 0.90 | razao < 0.1) {
+        if(razao < 0.5) {
+          razao <- 1 - razao
+        }
+        
+        acuracia <- c(acuracia, razao)
+        if(razao > 0.90) {
           clustersErrados[i] <- TRUE
         }
       }
@@ -83,14 +93,19 @@ while(TRUE) {
   
   falses <- clustersErrados[clustersErrados[] == FALSE]
   
+  print(nClusters)
+  print(acuracia)
+  
+  result <- sum(acuracia)/nClusters
+  
+  allMeanAcuracias <- c(allMeanAcuracias, result)
+  
   if(length(falses)/length(clustersErrados) < 0.1) {
     break
   }
-  
-  print(any(clustersErrados))
-  
   nClusters <- 1 + nClusters
   
-  
 }
+
+print(allMeanAcuracias)
 persp3D(xResult, yResult, zResult, counter=T, theta = 55, phi = 85, r = 100, d = 0.000001, expand = 2, ltheta = 90, lphi = 90, shade = 0.4, ticktype = 'detailed', nticks=5)
