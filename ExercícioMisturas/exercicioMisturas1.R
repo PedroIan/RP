@@ -21,3 +21,76 @@ plot(x[,1],x[,2], col = cores[classes], xlim = c(-1.5,1.5), ylim = c(-1.5,1.5), 
 nfolds <- 10
 
 teste1 <- allWithClasses[sample(nrow(allWithClasses), 3, replace=TRUE),]
+
+while(TRUE) {
+  
+  
+  clustersErrados <- matrix(FALSE, nrow = nClusters)
+  cores <- rainbow(nClusters)
+  
+  retList <- kMeans(nClusters, allWithClasses, 100)
+  
+  centrosClusters <- retList[[1]]
+  pontosClusterizados <- retList[[2]]
+  
+  for(i in 1:nClusters){
+    pontosSelecionados <- pontosClusterizados[pontosClusterizados[,4] == i,]
+    
+    diferentes <- unique(pontosSelecionados[,3])
+    
+    if(length(diferentes) <= 1) {
+      clustersErrados[i] <- TRUE
+    } else {
+      quantidade <- length(pontosSelecionados[pontosSelecionados[,3] == 1,1])
+      tamanhoTotal <- length(pontosSelecionados[,1])
+      razao <- quantidade/tamanhoTotal
+      
+      if(is.numeric(razao) & !is.na(razao)){
+        if(razao > 0.90 | razao < 0.1) {
+          clustersErrados[i] <- TRUE
+        }
+      }
+      
+    }
+  }
+  
+  den3d <- kde2d(pontosClusterizados[,1],pontosClusterizados[,2], lims=c(-1.5,1.5,-1.5,1.5),n=100)
+  
+  xResult <- den3d$x
+  yResult <- den3d$y
+  zResult <- matrix(0, nrow = nrow(den3d$z), ncol = ncol(den3d$z))
+  
+  
+  dev.off(dev.list()["RStudioGD"])
+  for(i in 1:nClusters){
+    
+    pointsToPlot <- pontosClusterizados[pontosClusterizados[,4] == i,]
+    
+    if(nrow(pointsToPlot) > 0){
+      plot(pointsToPlot[,1],pointsToPlot[,2],col = cores[i], xlim = c(-1.5,1.5), ylim = c(-1.5,1.5), xlab='x', ylab='y')
+      par(new=T)
+      
+      den3d <- kde2d(pointsToPlot[,1],pointsToPlot[,2], lims=c(-1.5,1.5,-1.5,1.5),n=100)
+      
+      #persp3D(den3d$x, den3d$y, den3d$z, counter=T, theta = 55, phi = 80, r = 40, d = 0.1, expand = 0.5, ltheta = 90, lphi = 180, shade = 0.4, ticktype = 'detailed', nticks=5)
+      
+      zResult <- zResult + den3d$z
+      
+    }
+  }
+  plot(centrosClusters[,1],centrosClusters[,2],col = 'red',cex=10, pch=2, xlim = c(-1.5,1.5), ylim = c(-1.5,1.5), xlab='x', ylab='y')
+  par(new=T)
+  
+  falses <- clustersErrados[clustersErrados[] == FALSE]
+  
+  if(length(falses)/length(clustersErrados) < 0.1) {
+    break
+  }
+  
+  print(any(clustersErrados))
+  
+  nClusters <- 1 + nClusters
+  
+  
+}
+persp3D(xResult, yResult, zResult, counter=T, theta = 55, phi = 85, r = 100, d = 0.000001, expand = 2, ltheta = 90, lphi = 90, shade = 0.4, ticktype = 'detailed', nticks=5)
