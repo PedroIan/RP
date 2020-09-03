@@ -41,15 +41,28 @@ kMeans <- function(nClusters, xIn, maxIteracao){
       clusterOfPoints[index] <- minIndex
     }
     
-    xIn[,3] <- clusterOfPoints
+    xIn[,4] <- clusterOfPoints
     
     for(j in 1:nrow(clusters)){
-      a <- xIn[xIn[,3] == j,]
-      xCenter <- sum(a[,1]) / length(a[,1])
-      yCenter <- sum(a[,2]) / length(a[,2])
+      a <- xIn[xIn[,4] == j,]
       
-      clusters[j,1] <- xCenter
-      clusters[j,2] <- yCenter
+      if(is.matrix(a)) {
+        xCenter <- sum(a[,1]) / length(a[,1])
+        yCenter <- sum(a[,2]) / length(a[,2])
+        
+        if(is.numeric(xCenter) & is.numeric(yCenter)){
+          clusters[j,1] <- xCenter
+          clusters[j,2] <- yCenter
+          
+        } else {
+          clusters[j,1] <- 0
+          clusters[j,2] <- 0
+        }
+        
+      } else {
+        clusters[j,1] <- 0
+        clusters[j,2] <- 0
+      }
     }
   }
   
