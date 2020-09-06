@@ -17,13 +17,14 @@ cores <- rainbow(nClusters)
 allWithClasses <- cbind(x, classes)
 diferentes <- matrix(0, nrow = nClusters)
 
-plot(x[,1],x[,2], col = cores[classes], xlim = c(-1.5,1.5), ylim = c(-1.5,1.5), xlab='x', ylab='y')
+plot(x[,1],x[,2], col = cores[classes], xlim = c(-1.0,1.0), ylim = c(-1.0,1.0), xlab='x', ylab='y')
 
 
 nfolds <- 10
 
 teste1 <- allWithClasses[sample(nrow(allWithClasses), 3, replace=TRUE),]
 allMeanAcuracias <- array(0,1)
+standardDeviation <- array(0,1)
 
 while(TRUE) {
   acuracia <- array(0,1)
@@ -64,7 +65,7 @@ while(TRUE) {
     }
   }
   
-  den3d <- kde2d(pontosClusterizados[,1],pontosClusterizados[,2], lims=c(-1.5,1.5,-1.5,1.5),n=100)
+  den3d <- kde2d(pontosClusterizados[,1],pontosClusterizados[,2], lims=c(-1.0,1.0,-1.0,1.0),n=100)
   
   xResult <- den3d$x
   yResult <- den3d$y
@@ -77,26 +78,27 @@ while(TRUE) {
     pointsToPlot <- pontosClusterizados[pontosClusterizados[,4] == i,]
     
     if(nrow(pointsToPlot) > 0){
-      plot(pointsToPlot[,1],pointsToPlot[,2],col = cores[i], xlim = c(-1.5,1.5), ylim = c(-1.5,1.5), xlab='x', ylab='y')
+      plot(pointsToPlot[,1],pointsToPlot[,2],col = cores[i], xlim = c(-1.0,1.0), ylim = c(-1.0,1.0), xlab='x', ylab='y')
       par(new=T)
       
-      den3d <- kde2d(pointsToPlot[,1],pointsToPlot[,2], lims=c(-1.5,1.5,-1.5,1.5),n=100)
+      den3d <- kde2d(pointsToPlot[,1],pointsToPlot[,2], lims=c(-1.0,1.0,-1.0,1.0),n=100)
       
       #persp3D(den3d$x, den3d$y, den3d$z, counter=T, theta = 55, phi = 80, r = 40, d = 0.1, expand = 0.5, ltheta = 90, lphi = 180, shade = 0.4, ticktype = 'detailed', nticks=5)
       
-      zResult <- zResult + den3d$z
-      
+      zResult <- zResult + den3d$z      
     }
   }
-  plot(centrosClusters[,1],centrosClusters[,2],col = 'red',cex=10, pch=2, xlim = c(-1.5,1.5), ylim = c(-1.5,1.5), xlab='x', ylab='y')
+  plot(centrosClusters[,1],centrosClusters[,2],col = 'red',cex=4, pch=2, xlim = c(-1.0,1.0), ylim = c(-1.0,1.0), xlab='x', ylab='y')
   par(new=T)
+  contour(xResult,yResult, zResult, xlim = c(-1.0,1.0), ylim = c(-1.0,1.0), xlab='', ylab='')
   
   falses <- clustersErrados[clustersErrados[] == FALSE]
   
   print(nClusters)
-  print(acuracia)
   
+  standardDeviation <- c(standardDeviation, sd(acuracia))
   result <- sum(acuracia)/nClusters
+  print(result)
   
   allMeanAcuracias <- c(allMeanAcuracias, result)
   
@@ -107,5 +109,11 @@ while(TRUE) {
   
 }
 
+print('Media')
 print(allMeanAcuracias)
+
+print('Standard Deviation')
+print(standardDeviation)
+
+dev.off(dev.list()["RStudioGD"])
 persp3D(xResult, yResult, zResult, counter=T, theta = 55, phi = 85, r = 100, d = 0.000001, expand = 2, ltheta = 90, lphi = 90, shade = 0.4, ticktype = 'detailed', nticks=5)
