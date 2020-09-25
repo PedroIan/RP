@@ -17,7 +17,7 @@ y <- as.numeric(p$classes)
 
 trainIndex <- createDataPartition(y, p=0.8, list=FALSE)
 
-plot(x[,1],x[,2], col = cores[y], xlim = c(-2,2), ylim = c(-2,2), xlab='x', ylab='y')
+plot(x[,1],x[,2], col = cores[y], xlim = c(-1,1), ylim = c(-1,1), xlab='x', ylab='y')
 
 minErro <- 10
 
@@ -27,33 +27,33 @@ svmtreinBest <- ksvm(x[trainIndex,],y[trainIndex],type='C-bsvc',kernel='rbfdot',
 # USADOS NO TREINAMENTO SVM.
 
 #for(sigmaValue in seq(0.05, 0.5, 0.01)){
-  for(cValue in seq(5, 50, 1)) {
+#  for(cValue in seq(5, 50, 1)) {
+#    
+#    svmtrein <- ksvm(x[trainIndex,],y[trainIndex],type='C-bsvc',kernel='rbfdot',kpar=list(sigma=sigmaValue),C=cValue)
+#  
+#    predict(svmtrein, x[-trainIndex,], type = "response", coupler = "minpair")
+#  
+#    a <- error(svmtrein)
+#    
+#    if(minErro > a) {
+#      svmtreinBest <- svmtrein
+#      minErro <- a
+#      
+#      print('Sigma')
+#      print(sigmaValue)
+#      print('C')
+#      print(cValue)
+#      
+#    }
+#  }
     
-    svmtrein <- ksvm(x[trainIndex,],y[trainIndex],type='C-bsvc',kernel='rbfdot',kpar=list(sigma=sigmaValue),C=cValue)
-  
-    predict(svmtrein, x[-trainIndex,], type = "response", coupler = "minpair")
-  
-    a <- error(svmtrein)
-    
-    if(minErro > a) {
-      svmtreinBest <- svmtrein
-      minErro <- a
-      
-      print('Sigma')
-      print(sigmaValue)
-      print('C')
-      print(cValue)
-      
-    }
-    
-  }
 
   
-}
+#}
 
 # FIM DO FOR
 
-
+erro <- error(svmtreinBest)
 suport <- SVindex(svmtreinBest)
 seqx1x2 <- seq(-2, 2, 0.1)
 lseq <- length(seqx1x2)
@@ -70,8 +70,8 @@ for (i in 1:lseq) {
   }
 }
 par(new = TRUE)
-plot(x[suport,1],x[suport,2], col = cores[3], xlim = c(-2,2), ylim = c(-2,2), xlab='x', ylab='y')
+plot(x[suport,1],x[suport,2], col = cores[3], xlim = c(-1,1), ylim = c(-1,1), xlab='x', ylab='y')
 par(new = TRUE)
-contour(seqx1x2, seqx1x2, MZ, nlevels = 1, xlim = c(-2, 2), ylim = c(-2, 2))
+contour(seqx1x2, seqx1x2, MZ, nlevels = 1, xlim = c(-1, 1), ylim = c(-1, 1))
 
 persp3D(seqx1x2,seqx1x2,MZ,counter=T,theta = 55, phi = 30, r = 40,d = 0.1, expand = 0.5, ltheta = 90, lphi = 180, shade = 0.4,ticktype = 'detailed', nticks=5)
