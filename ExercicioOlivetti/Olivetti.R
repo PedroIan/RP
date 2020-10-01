@@ -67,13 +67,13 @@ for(i in 1:10) {
   acuracia <- c( acuracia, as.numeric(cMatrix$overall[[1]]) )
 }
 
-mean(acuracia)
-sd(acuracia)
+mediaAcuracia <- mean(acuracia)
+sdAcuracia <- sd(acuracia)
 
 write.csv(newConfusionMatrix, file = "confusionMatrix.csv")
 print('Matriz salva!')
 
 indexesAll <- c(1:10,41:50,81:90,121:130)
-plot(abs(points[,1]), abs(points[,2]), col=cores[rotulos])
+plot(abs(points[indexesAll,1]), abs(points[indexesAll,2]), col=cores[rotulos[indexesAll]+5], ylab = 'PCA2', xlab = 'PCA1', pch=19)
 
 
