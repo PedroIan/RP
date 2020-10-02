@@ -7,29 +7,39 @@ require(caret)
 require(ks)
 data(BreastCancer) 
 
-db<- na.omit(BreastCancer) 
+db <- na.omit(BreastCancer) 
 
-X<- data.matrix(db[,2:10])
-y<- data.matrix(db[,11])
+# --------------------- Converting Data to Matrix
+X <- data.matrix(db[,2:10])
+y <- data.matrix(db[,11])
 
-y[y == 'benign']<- -1 
-y[y == 'malignant']<- 1 
+y[y == 'benign'] <- -1 
+y[y == 'malignant'] <- 1 
 y <- as.numeric(y)
 
-for (i in 1:nrow(X)) {
-  a <- prcomp(X[i,])
-  
-}
+# ---------------------
 
 trainIndex <- createDataPartition(y, p=0.7, list=FALSE)
 
-a <- data.frame(X, y)
-
+# --------------------- Variâncias de todos os componentes
 
 todosOsComponentes <- prcomp(X)
-b <- a$center
 
-X <- todosOsComponentes$x
+variancias <- NULL
+quantidadeDeComponentes <- ncol(todosOsComponentes$x)
+for (i in 1:quantidadeDeComponentes) {
+  variancias <- c(variancias, var(todosOsComponentes$x[,i]))
+}
+
+plot(c(1:quantidadeDeComponentes), variancias)
+
+# ---------------------
+
+pca2D <- prcomp(X, rank. = 2)
+
+X <- pca2D$x
+
+trainIndex <- createDataPartition(y, p=0.7, list=FALSE)
 
 svmModel <- svm(X[trainIndex,], y[trainIndex], const = 1, kernel = "radial", tolerance = 0.001, epsilon = 0.1, cross = 10)
 
