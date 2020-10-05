@@ -43,7 +43,9 @@ trainIndex <- createDataPartition(y, p=0.7, list=FALSE)
 
 svmModel <- svm(X[trainIndex,], y[trainIndex], const = 1, kernel = "radial", tolerance = 0.001, epsilon = 0.1, cross = 10)
 
-asd <- y[-trainIndex]
+erro <- svmModel$MSE
+print(1 - erro)
+mean(1 - erro)
 predictions <- predict(svmModel, X[-trainIndex,])
 yhat <- predictions
 
